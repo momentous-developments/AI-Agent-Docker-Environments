@@ -58,18 +58,23 @@ GOOGLE_CLOUD_PROJECT=your-gcp-project
 
 ### Authentication Methods
 
-#### Option 1: Host GCloud Credentials (Recommended for local development)
-```bash
-USE_HOST_GCLOUD_AUTH=true
-# Your host ~/.config/gcloud will be mounted read-only
-```
+#### Option 1: Service Account Key (RECOMMENDED)
+Service accounts provide persistent, non-expiring authentication ideal for containers.
 
-#### Option 2: Service Account Key (For CI/CD)
+**Quick Setup:**
+1. Download service account key from GCP Console
+2. Place in `./auth/service-account-key.json`
+3. Start container - authentication is automatic!
+
+See [SERVICE_ACCOUNT_SETUP.md](./SERVICE_ACCOUNT_SETUP.md) for detailed instructions.
+
+#### Option 2: Host GCloud Credentials (Local development only)
 ```bash
-USE_HOST_GCLOUD_AUTH=false
-GOOGLE_APPLICATION_CREDENTIALS=/home/developer/.gcloud/service-account.json
-# Place your key file in ./auth/service-account.json
+# In .env file:
+USE_HOST_GCLOUD_AUTH=true
+GOOGLE_APPLICATION_CREDENTIALS=
 ```
+⚠️ **Warning**: Host credentials may expire and cause authentication errors.
 
 ## Included Tools
 

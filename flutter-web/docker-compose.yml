@@ -27,8 +27,8 @@ services:
       - GIT_USER_EMAIL=${GITHUB_EMAIL}
       
       # Authentication
-      - USE_HOST_GCLOUD_AUTH=${USE_HOST_GCLOUD_AUTH:-true}
-      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+      - USE_HOST_GCLOUD_AUTH=${USE_HOST_GCLOUD_AUTH:-false}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-/home/developer/.gcloud/service-account-key.json}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       
       # Development Environment

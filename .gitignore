@@ -27,6 +27,7 @@ GITHUB_TOKEN
 
 # Authentication directories
 auth/
+*/auth/
 credentials/
 .gcloud/
 .firebase/

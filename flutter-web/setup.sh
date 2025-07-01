@@ -45,15 +45,24 @@ if [ ! -f .env ]; then
     exit 0
 fi
 
-# Create auth directory if using service account
-if [ -f .env ]; then
-    source .env
-    if [ "$USE_HOST_GCLOUD_AUTH" = "false" ] && [ ! -d "auth" ]; then
-        echo -e "${YELLOW}📁 Creating auth directory for service account keys...${NC}"
-        mkdir -p auth
-        echo -e "${GREEN}✓ Created auth directory${NC}"
-        echo -e "${YELLOW}⚠️  Place your service account JSON file in the auth/ directory${NC}"
-    fi
+# Create auth directory for service account (always create it)
+if [ ! -d "auth" ]; then
+    echo -e "${YELLOW}📁 Creating auth directory for service account keys...${NC}"
+    mkdir -p auth
+    echo -e "${GREEN}✓ Created auth directory${NC}"
+    echo ""
+    echo -e "${YELLOW}📋 Next steps for authentication:${NC}"
+    echo "1. Download service account key from Google Cloud Console"
+    echo "2. Save it as: ./auth/service-account-key.json"
+    echo "3. The container will automatically use this key"
+    echo ""
+    echo "See SERVICE_ACCOUNT_SETUP.md for detailed instructions"
+fi
+
+# Add auth directory to .gitignore if not already there
+if [ -f .gitignore ] && ! grep -q "^auth/$" .gitignore; then
+    echo "auth/" >> .gitignore
+    echo -e "${GREEN}✓ Added auth/ to .gitignore${NC}"
 fi
 
 # Check gcloud installation for host auth
