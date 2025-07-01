@@ -34,6 +34,9 @@ services:
       # Development Environment
       - ENVIRONMENT=${ENVIRONMENT:-development}
       - WEB_PORT=${WEB_PORT:-8080}
+      
+      # Claude Code configuration
+      - CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR=1
     
     volumes:
       # Project workspace

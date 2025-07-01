@@ -190,6 +190,9 @@ ENV PATH=/home/developer/.local/bin:/home/developer/.npm-global/bin:$PATH
 ENV NPM_CONFIG_PREFIX=/home/developer/.npm-global
 ENV PYTHONPATH=/home/developer/.local/lib/python3.11/site-packages:$PYTHONPATH
 
+# Claude Code configuration - maintain working directory across commands
+ENV CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR=1
+
 # Install Claude Code and other npm tools in user directory
 RUN npm install -g @anthropic-ai/claude-code && \
     npm install -g firebase-tools && \

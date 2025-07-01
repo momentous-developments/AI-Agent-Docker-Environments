@@ -132,6 +132,7 @@ The container is optimized for AI agent usage:
 2. **Python packages** are pre-installed for web scraping
 3. **Helper scripts** streamline common tasks
 4. **Status checking** with `container-status` command
+5. **Working directory stability** - `CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR=1` prevents `cd` commands from permanently changing the directory, avoiding AI agent confusion
 
 ## Security Best Practices
 
