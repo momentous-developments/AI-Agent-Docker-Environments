@@ -93,6 +93,12 @@ services:
     
     tty: true
     stdin_open: true
+    
+    # Recommended for Playwright/Chromium
+    ipc: host
+    init: true
+    cap_add:
+      - SYS_ADMIN
 
 volumes:
   flutter-sdk:

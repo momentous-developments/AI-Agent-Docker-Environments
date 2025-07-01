@@ -121,6 +121,45 @@ RUN echo "🛠️ Installing development tools..." && \
     && rm -rf /var/lib/apt/lists/* \
     && echo "✅ Development tools installed"
 
+# Install Playwright system dependencies for Chromium
+RUN echo "🎭 Installing Playwright dependencies..." && \
+    apt-get update && apt-get install -y --no-install-recommends \
+    fonts-liberation \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libatspi2.0-0 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libdrm2 \
+    libgbm1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libpango-1.0-0 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxrandr2 \
+    libxshmfence1 \
+    fonts-noto-color-emoji \
+    ttf-unifont \
+    libfontconfig1 \
+    libfreetype6 \
+    xfonts-cyrillic \
+    xfonts-scalable \
+    fonts-ipafont-gothic \
+    fonts-wqy-zenhei \
+    fonts-tlwg-loma-otf \
+    && rm -rf /var/lib/apt/lists/* \
+    && echo "✅ Playwright dependencies installed"
+
 # Install Google Chrome (official, not Chromium)
 RUN echo "🌐 Installing Google Chrome..." && \
     wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
@@ -199,7 +238,8 @@ RUN npm install -g @anthropic-ai/claude-code && \
     npm install -g @playwright/mcp@latest
 
 # Install Playwright browsers (as user to avoid permission issues)
-RUN npx playwright install chromium firefox webkit || true
+# Note: System dependencies are already installed above
+RUN npx playwright install chromium firefox webkit
 
 # Install Flutter testing tools (modern alternatives)
 RUN echo "🧪 Installing Flutter testing tools..." && \

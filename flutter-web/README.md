@@ -176,6 +176,15 @@ FLUTTER_VERSION=3.33.0
 - Review logs: `docker-compose logs`
 - Ensure Docker daemon is running
 
+### Playwright browser issues
+If Playwright browsers fail to launch, try running the container with:
+```bash
+docker run --ipc=host --init --cap-add=SYS_ADMIN your-container
+```
+- `--ipc=host`: Prevents Chromium memory issues
+- `--init`: Prevents zombie processes
+- `--cap-add=SYS_ADMIN`: Required for Chromium sandbox
+
 ### Authentication issues
 - For host auth: Run `gcloud auth login` on host
 - For service account: Check JSON file in `./auth/`
