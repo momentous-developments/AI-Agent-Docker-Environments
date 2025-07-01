@@ -192,7 +192,8 @@ ENV PYTHONPATH=/home/developer/.local/lib/python3.11/site-packages:$PYTHONPATH
 
 # Install Claude Code and other npm tools in user directory
 RUN npm install -g @anthropic-ai/claude-code && \
-    npm install -g firebase-tools
+    npm install -g firebase-tools && \
+    npm install -g @playwright/mcp@latest
 
 # Install Playwright browsers (as user to avoid permission issues)
 RUN npx playwright install chromium firefox webkit || true

@@ -130,16 +130,20 @@ if [ ! -f ~/.auth-setup-completed ] && [ -f ~/setup-authentication.sh ]; then
     ~/setup-authentication.sh && touch ~/.auth-setup-completed
 fi
 
-# Setup MCP server on first run (for fresh Claude installation)
+# Setup MCP servers on first run (for fresh Claude installation)
 if [ ! -f ~/.claude-mcp-configured ] && command -v claude &> /dev/null; then
-    echo "🔧 Setting up MCP server..."
+    echo "🔧 Setting up MCP servers..."
     # Initialize Claude config if needed
     mkdir -p ~/.claude
     if [ ! -f ~/.claude.json ]; then
         echo '{}' > ~/.claude.json
     fi
-    # Add MCP server
-    claude mcp add --transport sse context7 https://mcp.context7.com/sse 2>/dev/null && touch ~/.claude-mcp-configured || true
+    # Add MCP servers
+    echo "  📡 Adding context7 MCP server..."
+    claude mcp add --transport sse context7 https://mcp.context7.com/sse 2>/dev/null || true
+    echo "  🎭 Adding Playwright MCP server..."
+    claude mcp add playwright npx @playwright/mcp@latest 2>/dev/null || true
+    touch ~/.claude-mcp-configured
 fi
 
 # Welcome message
@@ -147,5 +151,5 @@ echo "🚀 Welcome to Momentous Flutter Development Environment - ${AGENT_NAME:-
 echo "📱 Flutter $(flutter --version | head -n 1 | cut -d' ' -f2) is ready!"
 echo "💡 Type 'flw' to run Flutter web on port ${WEB_PORT:-8080}"
 echo "🤖 Claude Code is available - use 'claude login' to authenticate"
-echo "📡 MCP server context7 is pre-configured"
+echo "📡 MCP servers pre-configured: context7, playwright"
 echo "🧪 Testing tools: lighthouse, puppeteer, playwright, axe-core available"

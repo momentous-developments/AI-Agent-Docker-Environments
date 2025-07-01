@@ -100,6 +100,9 @@ GOOGLE_APPLICATION_CREDENTIALS=/home/developer/.gcloud/service-account.json
 - Claude Code CLI
 - Anthropic API support
 - OpenAI API support (configurable)
+- MCP Servers:
+  - Context7 (SSE transport)
+  - Playwright (browser automation)
 
 ## Container Commands
 
