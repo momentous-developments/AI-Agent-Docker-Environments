@@ -1,0 +1,105 @@
+services:
+  flutter-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: flutter-web-dev:latest
+    container_name: ${CONTAINER_NAME:-flutter-web-dev}
+    hostname: ${CONTAINER_NAME:-flutter-web-dev}
+    
+    environment:
+      # Project identification
+      - PROJECT_NAME=${PROJECT_NAME}
+      - AGENT_NAME=${CONTAINER_NAME:-flutter-web-dev}
+      
+      # Flutter Environment
+      - FLUTTER_CHANNEL=${FLUTTER_CHANNEL:-stable}
+      - PUB_CACHE=/home/developer/.pub-cache
+      
+      # Firebase Configuration
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - GOOGLE_PROJECT_ID=${GOOGLE_CLOUD_PROJECT}
+      - CLOUDSDK_CORE_PROJECT=${GOOGLE_CLOUD_PROJECT}
+      
+      # GitHub Configuration
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GIT_USER_NAME=${GITHUB_USERNAME}
+      - GIT_USER_EMAIL=${GITHUB_EMAIL}
+      
+      # Authentication
+      - USE_HOST_GCLOUD_AUTH=${USE_HOST_GCLOUD_AUTH:-true}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      
+      # Development Environment
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - WEB_PORT=${WEB_PORT:-8080}
+    
+    volumes:
+      # Project workspace
+      - ${WORKSPACE_MOUNT}:/home/developer/workspace:cached
+      
+      # Host gcloud credentials (read-only) - when using host auth
+      - ~/.config/gcloud:/home/developer/host-gcloud-config:ro
+      
+      # Service account credentials (optional)
+      - ./auth:/home/developer/.gcloud:ro
+      
+      # SSH keys for git operations
+      - ~/.ssh:/home/developer/.ssh:ro
+      
+      # Persist Flutter SDK and caches
+      - flutter-sdk:/home/developer/flutter:cached
+      - pub-cache:/home/developer/.pub-cache:cached
+      - npm-cache:/home/developer/.npm-global:cached
+    
+    ports:
+      # Flutter web server
+      - "${WEB_PORT:-8080}:8080"
+      
+      # Flutter DevTools
+      - "${DEVTOOLS_PORT:-9100}:9100"
+      
+      # Alternative ports
+      - "${ALT_WEB_PORT:-8081}:8081"
+      - "${ALT_DEV_PORT:-3000}:3000"
+    
+    working_dir: /home/developer/workspace
+    
+    # Run authentication setup and then start zsh
+    entrypoint: ["/bin/bash", "-c"]
+    command: 
+      - |
+        # Mark auth as completed so .zshrc doesn't run it again
+        touch /home/developer/.auth-setup-completed
+        
+        # Run authentication setup ONCE
+        /home/developer/setup-authentication.sh
+        
+        # Clone repository if specified and not exists
+        if [ -n "${GITHUB_REPO}" ] && [ ! -d "/home/developer/workspace/$(basename ${GITHUB_REPO} .git)" ]; then
+          echo "Cloning repository..."
+          git clone ${GITHUB_REPO} /home/developer/workspace/$(basename ${GITHUB_REPO} .git)
+        fi
+        
+        # Start zsh for interactive use
+        exec /bin/zsh
+    
+    networks:
+      - flutter-dev
+    
+    tty: true
+    stdin_open: true
+
+volumes:
+  flutter-sdk:
+    name: ${PROJECT_NAME:-flutter}-flutter-sdk
+  pub-cache:
+    name: ${PROJECT_NAME:-flutter}-pub-cache
+  npm-cache:
+    name: ${PROJECT_NAME:-flutter}-npm-cache
+
+networks:
+  flutter-dev:
+    name: ${PROJECT_NAME:-flutter}-network
+    driver: bridge
